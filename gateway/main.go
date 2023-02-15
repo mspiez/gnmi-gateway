@@ -28,9 +28,9 @@ import (
 
 	"github.com/kelseyhightower/envconfig"
 
-	"github.com/openconfig/gnmi-gateway/gateway/configuration"
-	_ "github.com/openconfig/gnmi-gateway/gateway/exporters/all"
-	_ "github.com/openconfig/gnmi-gateway/gateway/loaders/all"
+	"github.com/mspiez/gnmi-gateway/gateway/configuration"
+	_ "github.com/mspiez/gnmi-gateway/gateway/exporters/all"
+	_ "github.com/mspiez/gnmi-gateway/gateway/loaders/all"
 )
 
 // Main is the entry point for the command-line and it's a good example of how to call StartGateway but
@@ -135,6 +135,8 @@ func ParseArgs(config *configuration.GatewayConfig) error {
 	zkHosts := flag.String("ZookeeperHosts", "", "Comma separated (no spaces) list of zookeeper hosts including port")
 	flag.StringVar(&config.ZookeeperPrefix, "ZookeeperPrefix", "/gnmi/gateway/", "Prefix for the lock path in Zookeeper")
 	flag.DurationVar(&config.ZookeeperTimeout, "ZookeeperTimeout", 1*time.Second, "Zookeeper timeout time. Minimum is 1 second. Failover time is (ZookeeperTimeout * 2)")
+	flag.StringVar(&config.NautobotToken, "NautobotToken", "", "NautobotToken")
+	flag.StringVar(&config.NautobotUrl, "NautobotUrl", "", "NautobotUrl")
 
 	flag.Parse()
 	config.Exporters.Enabled = cleanSplit(*exporters)

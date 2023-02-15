@@ -104,6 +104,10 @@ type GatewayConfig struct {
 	// Minimum ZookeeperTimeout is ('your Zookeeper server tickTime' * 2).
 	// Failover of targets will take (ZookeeperTimeout * 2) time.
 	ZookeeperTimeout time.Duration `json:"zookeeper_timeout"`
+	// Nautobot Token
+	NautobotToken string `json:"nautobot_token"`
+	// Nautbot base url
+	NautobotUrl string `json:"nautobot_url"`
 }
 
 type ExportersConfig struct {

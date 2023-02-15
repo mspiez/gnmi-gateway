@@ -135,3 +135,13 @@ func GetNumberValues(tv *gnmi.TypedValue) (float64, bool) {
 	}
 	return 0, false
 }
+
+func GetStringValues(tv *gnmi.TypedValue) (string, bool) {
+	if tv != nil && tv.Value != nil {
+		switch tv.Value.(type) {
+		case *gnmi.TypedValue_StringVal:
+			return tv.GetStringVal(), true
+		}
+	}
+	return "", false
+}

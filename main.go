@@ -15,7 +15,7 @@
 
 package main
 
-import "github.com/openconfig/gnmi-gateway/gateway"
+import "github.com/mspiez/gnmi-gateway/gateway"
 
 func main() {
 	gateway.Main()
