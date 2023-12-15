@@ -17,8 +17,6 @@ import (
 	prom "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	// "github.com/prometheus/client_golang/prometheus/promhttp"
-
 	"github.com/mspiez/gnmi-gateway/gateway/configuration"
 	"github.com/mspiez/gnmi-gateway/gateway/exporters"
 	"github.com/mspiez/gnmi-gateway/gateway/openconfig"
@@ -63,18 +61,15 @@ func (e *NautobotExporter) Name() string {
 // update:{path:{elem:{name:"out-pkts"}} val:{uint_val:3094}}
 func (e *NautobotExporter) Export(leaf *ctree.Leaf) {
 	notification := leaf.Value().(*gnmipb.Notification)
-	fmt.Println("Notification: ", notification)
+	// fmt.Println("Notification: ", notification)
 	for _, update := range notification.Update {
-		value, isNumber := utils.GetNumberValues(update.Val)
-		fmt.Println("Val, isNumber: ", value, isNumber)
+		_, isNumber := utils.GetNumberValues(update.Val)
 		if isNumber {
 			continue
 		}
 		metricName, labels := UpdateToMetricNameAndLabels(notification.GetPrefix(), update)
-		metricHash := NewStringMapHash(metricName, labels)
-		fmt.Println("metricName: ", metricName)
-		fmt.Println("Labels: ", labels)
-		fmt.Println("metricHash: ", metricHash)
+		// metricHash := NewStringMapHash(metricName, labels)
+
 		device_slug, err := getSlug(labels, "target")
 		if err != nil {
 			fmt.Println(err)
@@ -82,14 +77,14 @@ func (e *NautobotExporter) Export(leaf *ctree.Leaf) {
 		}
 		interface_slug, err := getSlug(labels, "interfaces_interface_name")
 		if err != nil {
-			fmt.Println(err)
+			// fmt.Println(err)
 			continue
 		}
 
 		endpoint := fmt.Sprintf("%s__%s", device_slug, interface_slug)
 		interfaceStatus, ok := utils.GetStringValues(update.Val)
 		if !ok {
-			fmt.Println(ok)
+			// fmt.Println(ok)
 			continue
 		}
 
