@@ -8,14 +8,11 @@ import (
 	"strings"
 	"time"
 
-	"net/http"
-
 	"github.com/gosimple/slug"
 	"github.com/openconfig/gnmi/cache"
 	"github.com/openconfig/gnmi/ctree"
 	gnmipb "github.com/openconfig/gnmi/proto/gnmi"
 	prom "github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/mspiez/gnmi-gateway/gateway/configuration"
 	"github.com/mspiez/gnmi-gateway/gateway/exporters"
@@ -55,20 +52,16 @@ func (e *NautobotExporter) Name() string {
 	return Name
 }
 
-// timestamp:1666212263233342118
-// prefix:{elem:{name:"interfaces"} elem:{name:"interface" key:{key:"name" value:"Management1"}}
-// elem:{name:"state"} elem:{name:"counters"} target:"R2"}
-// update:{path:{elem:{name:"out-pkts"}} val:{uint_val:3094}}
 func (e *NautobotExporter) Export(leaf *ctree.Leaf) {
 	notification := leaf.Value().(*gnmipb.Notification)
-	// fmt.Println("Notification: ", notification)
+	fmt.Println(notification)
 	for _, update := range notification.Update {
 		_, isNumber := utils.GetNumberValues(update.Val)
 		if isNumber {
 			continue
 		}
+		// fmt.Println(notification)
 		metricName, labels := UpdateToMetricNameAndLabels(notification.GetPrefix(), update)
-		// metricHash := NewStringMapHash(metricName, labels)
 
 		device_slug, err := getSlug(labels, "target")
 		if err != nil {
@@ -80,11 +73,12 @@ func (e *NautobotExporter) Export(leaf *ctree.Leaf) {
 			// fmt.Println(err)
 			continue
 		}
+		fmt.Println(notification)
 
 		endpoint := fmt.Sprintf("%s__%s", device_slug, interface_slug)
 		interfaceStatus, ok := utils.GetStringValues(update.Val)
 		if !ok {
-			// fmt.Println(ok)
+			// fmt.Println(interfaceStatus)
 			continue
 		}
 
@@ -98,6 +92,7 @@ func (e *NautobotExporter) Export(leaf *ctree.Leaf) {
 				} else {
 					e.interaceStatus[endpoint]["oper"] = interfaceStatus
 				}
+				fmt.Println("oper: ", interfaceStatus)
 			}
 		case "interfaces_interface_state_admin_status":
 			{
@@ -107,6 +102,7 @@ func (e *NautobotExporter) Export(leaf *ctree.Leaf) {
 				} else {
 					e.interaceStatus[endpoint]["admin"] = interfaceStatus
 				}
+				fmt.Println("admin: ", interfaceStatus)
 			}
 		}
 
@@ -133,31 +129,7 @@ func (e *NautobotExporter) Start(cache *cache.Cache) error {
 		e.config.Log.Error().Err(err).Msgf("Unable to load OpenConfig modules in %s: %v", e.config.OpenConfigDirectory, err)
 		return err
 	}
-	// e.ReadEnvs()
-	go e.runHttpServer()
 	return nil
-}
-
-func (e *NautobotExporter) runHttpServer() {
-	var errCount = 0
-	var lastError error
-	for {
-		e.config.Log.Info().Msg("Starting Prometheus HTTP server.")
-		http.Handle("/metrics", promhttp.Handler())
-		err := http.ListenAndServe(":59100", nil)
-		if err != nil {
-			e.config.Log.Error().Err(err).Msgf("Prometheus HTTP server stopped with an error: %v", err)
-			if err.Error() == lastError.Error() {
-				errCount = errCount + 1
-				if errCount >= 3 {
-					panic(fmt.Errorf("too many errors returned by Prometheus HTTP server: %s", err.Error()))
-				}
-			} else {
-				errCount = 0
-				lastError = err
-			}
-		}
-	}
 }
 
 func UpdateToMetricNameAndLabels(prefix *gnmipb.Path, update *gnmipb.Update) (string, map[string]string) {
@@ -167,28 +139,19 @@ func UpdateToMetricNameAndLabels(prefix *gnmipb.Path, update *gnmipb.Update) (st
 	if prefix != nil {
 		target := prefix.GetTarget()
 		if target != "" {
-			// R2
 			labels["target"] = target
 		}
 	}
 
 	for _, elem := range update.Path.Elem {
-		// in-pkts => in_pkts
 		elemName := strings.ReplaceAll(elem.Name, "-", "_")
 		if metricName == "" {
-			// metricName -> in_pkts
 			metricName = elemName
 		} else {
-			// update:{path:{elem:{name:"meta"} elem:{name:"sync"}} val:{bool_val:true}}
-			// meta_sync
 			metricName = metricName + "_" + elemName
 		}
-		// elem:{name:"interface" key:{key:"name" value:"Management1"}}
 		for key, value := range elem.Key {
-			// metricName = in_pkts
-			// labelKey -> in_pkts_name
 			labelKey := metricName + "_" + strings.ReplaceAll(key, "-", "_")
-			// in_pkts_name = "Management1"
 			labels[labelKey] = value
 		}
 	}

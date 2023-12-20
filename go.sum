@@ -376,8 +376,8 @@ github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742/go.mod h1:bx2lN
 github.com/modern-go/reflect2 v1.0.1 h1:9f412s+6RmYXLWZSEzVVgPGK7C2PphHj5RJrvfx9AWI=
 github.com/modern-go/reflect2 v1.0.1/go.mod h1:bx2lNnkwVCuqBIxFjflWJWanXIb3RllmbCylyMrvgv0=
 github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe/go.mod h1:wL8QJuTMNUDYhXwkmfOly8iTdp5TEcJFWZD2D7SIkUc=
-github.com/mspiez/nautobot-go-client v0.0.3 h1:OodPax1xeVrpi1623PU9uJ7nDkXF/XDnYfHVb8ysUHo=
-github.com/mspiez/nautobot-go-client v0.0.3/go.mod h1:+F/Bw4p7jo5akP06xVc+SuT5UU0CHW+ulvzfUiHbAS8=
+github.com/mspiez/nautobot-go-client v0.1.0 h1:j3KunfQNDjA2WvgVzC/kEXzsyT7RvxqBdPyyS6bR2PU=
+github.com/mspiez/nautobot-go-client v0.1.0/go.mod h1:+F/Bw4p7jo5akP06xVc+SuT5UU0CHW+ulvzfUiHbAS8=
 github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
 github.com/netbox-community/go-netbox v0.0.0-20201002085217-91e5d561efe4 h1:RItVpKp8mOF8CKYsEjqBTl1t4rXFL4rLXp3qoSO6qME=
 github.com/netbox-community/go-netbox v0.0.0-20201002085217-91e5d561efe4/go.mod h1:2BQHB87NQnl/KrnLLMKTKNNyUrE/GP7Vsa8EueN0bTY=

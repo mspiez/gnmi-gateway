@@ -13,7 +13,7 @@ require (
 	github.com/gosimple/slug v1.13.1
 	github.com/influxdata/influxdb-client-go/v2 v2.2.3
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/mspiez/nautobot-go-client v0.0.3
+	github.com/mspiez/nautobot-go-client v0.1.0
 	github.com/netbox-community/go-netbox v0.0.0-20201002085217-91e5d561efe4
 	github.com/openconfig/gnmi v0.0.0-20200617225440-d2b4e6a45802
 	github.com/openconfig/goyang v0.0.0-20200623182805-6be32aef2bcd
